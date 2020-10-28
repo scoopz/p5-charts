@@ -72,6 +72,8 @@ class P5BarChart {
   resize(width, height) {
     this.canvas.width = width;
     this.canvas.height = height;
+
+    this.preProcessData();
   }
 
   // draw contents to the screen
@@ -81,58 +83,33 @@ class P5BarChart {
     fill(this.background.fillColor);
     rect(this.pos.x, this.pos.y, this.canvas.width, this.canvas.height);
 
-    // draw bar lines
+    // draw axis lines
     stroke(this.yAxis.lineColor);
     line(
-      this.pos.x + 130,
+      this.pos.x + this.w(130),
       this.yDrawBottom,
-      this.pos.x + 130,
-      this.pos.y + 100
+      this.pos.x + this.w(130),
+      this.pos.y + this.h(100)
     );
     stroke(this.xAxis.lineColor);
     line(
-      this.pos.x + 130,
+      this.pos.x + this.w(130),
       this.yDrawBottom,
-      this.pos.x + 1200,
+      this.pos.x + this.w(1200),
       this.yDrawBottom
     );
 
-    // draw y texts
+    textSize(this.w(12));
+
+    // draw y Labels
     fill(this.yAxis.labelColor);
     stroke(this.yAxis.labelColor);
     textAlign(RIGHT, CENTER);
     for (let i = this.max; i >= 0; i -= this.yIncrement) {
       text(
         i.toFixed(2),
-        this.pos.x + 130 - this.max.toString().length * this.w(2),
+        this.pos.x + this.w(+130) - this.max.toString().length * this.w(2),
         this.yDrawBottom - i * this.yDistance
-      );
-    }
-
-    // draw horizontal lines
-    if (this.horizontalLines.visible) {
-      fill(this.horizontalLines.color);
-      stroke(this.horizontalLines.color);
-      for (let i = this.max; i > 0; i -= this.yIncrement) {
-        line(
-          this.w(this.pos.x + 130),
-          this.yDrawBottom - i * this.yDistance,
-          this.w(this.pos.x + 1200),
-          this.yDrawBottom - i * this.yDistance
-        );
-      }
-    }
-
-    // draw bars
-    fill(this.bars.fillColor);
-    stroke(this.bars.borderColor);
-    for (let i = 0; i < this.data.length; i++) {
-      let line = this.data[i];
-      rect(
-        this.pos.x + 150 + this.xEachSpace * i,
-        this.yDrawBottom - line * this.yDistance,
-        this.barWidth,
-        line * this.yDistance
       );
     }
 
@@ -144,8 +121,35 @@ class P5BarChart {
       let xLabel = this.xAxis.labels[i];
       text(
         xLabel,
-        this.pos.x + 150 + this.xEachSpace * i + this.barWidth / 2,
+        this.pos.x + this.w(+150) + this.xEachSpace * i + this.barWidth / 2,
         this.yDrawBottom + 20
+      );
+    }
+
+    // draw horizontal lines
+    if (this.horizontalLines.visible) {
+      fill(this.horizontalLines.color);
+      stroke(this.horizontalLines.color);
+      for (let i = this.max; i > 0; i -= this.yIncrement) {
+        line(
+          this.pos.x + this.w(130),
+          this.yDrawBottom - i * this.yDistance,
+          this.pos.x + this.w(1200),
+          this.yDrawBottom - i * this.yDistance
+        );
+      }
+    }
+
+    // draw bars
+    fill(this.bars.fillColor);
+    stroke(this.bars.borderColor);
+    for (let i = 0; i < this.data.length; i++) {
+      let line = this.data[i];
+      rect(
+        this.pos.x + this.w(150) + this.xEachSpace * i,
+        this.yDrawBottom - line * this.yDistance,
+        this.barWidth,
+        line * this.yDistance
       );
     }
   }
@@ -157,17 +161,19 @@ class P5BarChart {
     // find min and max values
     this.max = Math.max.apply(Math, this.data);
 
-    // y position difference between two labels
+    // y size difference between two labels
     this.yIncrement = this.yi();
 
     // width can be taken to display one x instance
-    this.xEachSpace = (1200 - 130) / this.data.length;
+    this.xEachSpace = this.w((1200 - 130) / this.data.length);
 
     // defines the bar width
-    this.barWidth = (50 / 120) * this.xEachSpace;
+    this.barWidth = this.w((50 / 120) * this.xEachSpace);
 
     // y pixel difference between two labels
     this.yDistance = this.yd();
+
+    console.log(this.yDistance, this.yIncrement);
   }
 
   yd() {
