@@ -1,3 +1,7 @@
+Donations to the following ADA address is much appreciated. ❤️
+
+![img](https://user-images.githubusercontent.com/26799723/125172689-b7eed400-e1d8-11eb-8b10-2d7ee7023e4b.png)
+
 
 # p5-charts
 This is sort of a library which you can integrate in your p5.js project to fulfil chart needs. There is no installation at the moment, you can just copy the class you want directly from the source and use it by providing below information.
